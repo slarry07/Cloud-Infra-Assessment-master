@@ -9,50 +9,6 @@ Conceptual diagram (simplified):
 
 ![AWS EKS Architecture](AWS cloud architecture..png)
 
-```mermaid
-flowchart LR
-  U[Users / Tenants] --> CF[CloudFront + WAF]
-  CF --> ALB[Public ALB]
-  ALB --> INGRESS[Ingress Controller (EKS)]
-  
-  subgraph VPC[App VPC]
-    IGW[Internet Gateway]
-    NAT[NAT Gateways (per AZ)]
-    IGW <---> PublicSubnets
-    NAT <---> PrivateSubnets
-
-    subgraph PublicSubnets[Public Subnets]
-      ALB
-    end
-
-    subgraph PrivateSubnets[Private Subnets - EKS Node Groups]
-      EKS[EKS Cluster]
-      EKS --> SVC[Services / Pods]
-    end
-
-    subgraph DataSubnets[Data Subnets]
-      RDS[(RDS/Aurora)]
-      Redis[(ElastiCache)]
-      S3Buckets[(S3 w/ KMS)]
-    end
-  end
-
-  EKS --> RDS
-  EKS --> Redis
-  EKS --> S3Buckets
-
-  subgraph Observability
-    CW[CloudWatch]
-    PM[Prometheus]
-    GF[Grafana]
-    LG[Loki / CloudWatch Logs]
-  end
-
-  EKS --> PM
-  EKS --> LG
-  AWSBackup[(AWS Backup)] --> RDS
-  AWSBackup --> S3Buckets
-```
 
 #### 1.2 Networking
 
